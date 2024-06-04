@@ -37,7 +37,6 @@ CREATE TABLE `finance-manager`.`transaction` (
   `UserID` INT NOT NULL,
   `AccountID` INT NOT NULL,
   `Date` DATE NOT NULL,
-  `Type` ENUM("Витрати", "Отримання") NOT NULL,
   `CategoryID` INT NOT NULL,
   `Amount` FLOAT NOT NULL,
   `Note` TINYTEXT NULL,
