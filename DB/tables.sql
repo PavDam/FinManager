@@ -22,10 +22,12 @@ CREATE TABLE `account` (
 
 CREATE TABLE `category` (
   `ID` INT NOT NULL AUTO_INCREMENT,
+  `UserID` INT,
   `Name` VARCHAR(40) NOT NULL,
   `Type` ENUM('Витрати', 'Отримання') NOT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE (`Name`)
+  INDEX (`UserID`),
+  FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `transaction` (
