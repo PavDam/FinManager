@@ -4,6 +4,7 @@
 
 package com.mycompany.finmanagerpav;
 
+import LoginForms.LoginForm;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 /**
@@ -15,6 +16,7 @@ public class FinManagerPav {
     public static MysqlDataSource data = new MysqlDataSource(); 
     public static int currentUserID;
     public static String currentUsername;
+    public static float currentLimit;
     
     public static void main(String[] args) {
         data.setServerName("localhost");

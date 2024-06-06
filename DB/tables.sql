@@ -3,7 +3,7 @@ CREATE TABLE `user` (
   `Username` VARCHAR(20) NOT NULL,
   `Email` VARCHAR(70) NOT NULL,
   `Password` CHAR(60) NOT NULL,
-  `Limit` FLOAT NOT NULL DEFAULT 0.0,
+  `MonthLimit` FLOAT NOT NULL DEFAULT 0.0,
   PRIMARY KEY (`ID`),
   UNIQUE (`Email`)
 );

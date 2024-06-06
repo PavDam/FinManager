@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.finmanagerpav;
+package LoginForms;
 
-import MainForms.MenuForm;
+import MenuForms.MenuForm;
+import com.mycompany.finmanagerpav.FinManagerPav;
+import RegisterForms.RegisterForm;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,16 +46,15 @@ public class LoginForm extends javax.swing.JFrame {
 
         PasswordField = new javax.swing.JPasswordField();
         EmailField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        LoginTitleLabel = new javax.swing.JLabel();
+        EmailLabel = new javax.swing.JLabel();
+        PasswordLabel = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
+        ToRegisterLabel0 = new javax.swing.JLabel();
         ToRegisterLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FinManager");
-        setPreferredSize(new java.awt.Dimension(650, 400));
         setResizable(false);
 
         PasswordField.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -61,16 +62,16 @@ public class LoginForm extends javax.swing.JFrame {
         EmailField.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         EmailField.setName(""); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("Вхід");
+        LoginTitleLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        LoginTitleLabel.setText("Вхід");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setLabelFor(EmailField);
-        jLabel2.setText("Ел. пошта");
+        EmailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        EmailLabel.setLabelFor(EmailField);
+        EmailLabel.setText("Ел. пошта");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setLabelFor(PasswordField);
-        jLabel3.setText("Пароль");
+        PasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        PasswordLabel.setLabelFor(PasswordField);
+        PasswordLabel.setText("Пароль");
 
         LoginButton.setText("Увійти");
         LoginButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -81,8 +82,8 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel4.setText("Або ви можете  ");
+        ToRegisterLabel0.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ToRegisterLabel0.setText("Або ви можете  ");
 
         ToRegisterLabel.setForeground(new java.awt.Color(51, 102, 255));
         ToRegisterLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -106,13 +107,13 @@ public class LoginForm extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(LoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel2)
-                        .addComponent(jLabel3)
+                        .addComponent(EmailLabel)
+                        .addComponent(PasswordLabel)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel1)
+                            .addComponent(LoginTitleLabel)
                             .addComponent(EmailField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(ToRegisterLabel0)
                         .addGap(0, 0, 0)
                         .addComponent(ToRegisterLabel)))
                 .addContainerGap(48, Short.MAX_VALUE))
@@ -120,23 +121,23 @@ public class LoginForm extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(57, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addGap(61, 61, 61)
+                .addComponent(LoginTitleLabel)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(EmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(EmailField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(LoginButton)
+                .addComponent(LoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                    .addComponent(ToRegisterLabel0)
                     .addComponent(ToRegisterLabel))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addGap(62, 62, 62))
         );
 
         pack();
@@ -145,7 +146,6 @@ public class LoginForm extends javax.swing.JFrame {
     private void ToRegisterLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ToRegisterLabelMouseClicked
         // TODO add your handling code here:
         RegisterForm RegF = new RegisterForm();
-        // Відображення вікна
         RegF.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ToRegisterLabelMouseClicked
@@ -161,7 +161,7 @@ public class LoginForm extends javax.swing.JFrame {
         }
         
         try (Connection connection = FinManagerPav.data.getConnection()) {
-            String query = "SELECT ID, Username, Password FROM `user` WHERE Email = ?";
+            String query = "SELECT ID, Username, Password, MonthLimit FROM `user` WHERE Email = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, email);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -172,9 +172,11 @@ public class LoginForm extends javax.swing.JFrame {
                             // Пароль вірний
                             int userID = resultSet.getInt("ID");
                             String username = resultSet.getString("Username");
+                            float limit = resultSet.getFloat("MonthLimit");
                             FinManagerPav.currentUserID = userID;
                             FinManagerPav.currentUsername = username;
-
+                            FinManagerPav.currentLimit = limit;
+                            
                             pref.put("Email", email);
                             
                             MenuForm MenuF = new MenuForm();
@@ -233,12 +235,12 @@ public class LoginForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField EmailField;
+    private javax.swing.JLabel EmailLabel;
     private javax.swing.JButton LoginButton;
+    private javax.swing.JLabel LoginTitleLabel;
     private javax.swing.JPasswordField PasswordField;
+    private javax.swing.JLabel PasswordLabel;
     private javax.swing.JLabel ToRegisterLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel ToRegisterLabel0;
     // End of variables declaration//GEN-END:variables
 }
