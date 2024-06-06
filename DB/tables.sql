@@ -5,7 +5,6 @@ CREATE TABLE `user` (
   `Password` CHAR(60) NOT NULL,
   `Limit` FLOAT NOT NULL DEFAULT 0.0,
   PRIMARY KEY (`ID`),
-  UNIQUE (`Username`),
   UNIQUE (`Email`)
 );
 

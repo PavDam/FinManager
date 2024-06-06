@@ -166,12 +166,12 @@ public class LoginForm extends javax.swing.JFrame {
                 statement.setString(1, email);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        int userID = resultSet.getInt("ID");
-                        String username = resultSet.getString("Username");
                         String hashedPassword = resultSet.getString("Password");
 
                         if (BCrypt.checkpw(password, hashedPassword)) {
                             // Пароль вірний
+                            int userID = resultSet.getInt("ID");
+                            String username = resultSet.getString("Username");
                             FinManagerPav.currentUserID = userID;
                             FinManagerPav.currentUsername = username;
 

@@ -147,11 +147,48 @@ public class RegisterForm extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private boolean isValidEmail(String email) {
-        // Регулярний вираз для перевірки наявності символу '@' та хоча б одного символу перед ним
+        // Регулярний вираз для перевірки
         String emailRegex = "^[^@]+@[^@]+\\.[^@]+$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    private boolean validateRegistrationInput(String username, String email, String password, String repPassword) {
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || repPassword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Заповніть всі поля!", "Помилка", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (!isValidEmail(email)) {
+            JOptionPane.showMessageDialog(this, "Невірний формат ел. пошти!", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (!password.equals(repPassword)) {
+            JOptionPane.showMessageDialog(this, "Паролі не співпадають!", "Помилка", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        try (Connection connection = FinManagerPav.data.getConnection()) {
+            // Перевірка, чи email вже існує в базі даних
+            String checkQuery = "SELECT COUNT(*) FROM `user` WHERE `Email` = ?";
+            try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
+                checkStatement.setString(1, email);
+                try (ResultSet resultSet = checkStatement.executeQuery()) {
+                    if (resultSet.next() && resultSet.getInt(1) > 0) {
+                        JOptionPane.showMessageDialog(this, "Електронна пошта вже зайнята!", "Помилка", JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при перевірці користувача!", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
         
     private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
@@ -160,39 +197,15 @@ public class RegisterForm extends javax.swing.JFrame {
         String email = EmailField.getText();
         String password = new String(PasswordField.getPassword());
         String repPassword = new String(RepeatPassField.getPassword());
-        
-        if(username.isEmpty() || email.isEmpty() || password.isEmpty() || repPassword.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Заповніть всі поля!", "Помилка", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        if (!isValidEmail(email)) {
-            JOptionPane.showMessageDialog(this, "Невірний формат ел. пошти!", "Помилка", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-                
-        if (!password.equals(repPassword)) {
-            JOptionPane.showMessageDialog(this, "Паролі не співпадають!", "Помилка", JOptionPane.WARNING_MESSAGE);
+
+        if (!validateRegistrationInput(username, email, password, repPassword)) {
             return;
         }
         
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         try (Connection connection = FinManagerPav.data.getConnection()) {
-            // Перевірка, чи username або email вже існує в базі даних
-            String checkQuery = "SELECT COUNT(*) FROM `user` WHERE `Username` = ? OR `Email` = ?";
-            try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
-                checkStatement.setString(1, username);
-                checkStatement.setString(2, email);
-                try (ResultSet resultSet = checkStatement.executeQuery()) {
-                    if (resultSet.next() && resultSet.getInt(1) > 0) {
-                        JOptionPane.showMessageDialog(this, "Ім'я користувача або електронна пошта вже зайняті!", "Помилка", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                }
-            }
-
-            //Створення нового користувача в базі даних
+            // Створення нового користувача в базі даних
             String insertQuery = "INSERT INTO `user` (Username, Email, Password) VALUES (?, ?, ?)";
             try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
                 insertStatement.setString(1, username);
@@ -200,6 +213,7 @@ public class RegisterForm extends javax.swing.JFrame {
                 insertStatement.setString(3, hashedPassword);
                 insertStatement.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Акаунт створено!", "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
