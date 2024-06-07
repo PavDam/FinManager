@@ -8,6 +8,7 @@ import static AccountsForms.AccountsForm.displayAccounts;
 import com.mycompany.finmanagerpav.FinManagerPav;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -136,11 +137,31 @@ public class AddAccountDialog extends javax.swing.JDialog {
 
         try {
             Float.parseFloat(amountText);
-            return true;
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Некоректний формат суми.", "Помилка", JOptionPane.WARNING_MESSAGE);
             return false;
         }
+        
+        // Перевірка на існування гаманця з такою ж назвою для обраного користувача
+        try (Connection connection = FinManagerPav.data.getConnection()) {
+            String query = "SELECT COUNT(*) FROM account WHERE UserID = ? AND Title = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, FinManagerPav.currentUserID);
+                statement.setString(2, title);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next() && resultSet.getInt(1) > 0) {
+                        JOptionPane.showMessageDialog(this, "Гаманець з такою назвою вже існує.", "Помилка", JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при перевірці гаманця.", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
     
     private void AddAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddAccountButtonActionPerformed
@@ -150,7 +171,7 @@ public class AddAccountDialog extends javax.swing.JDialog {
         String amountText = AmountField.getText();
         
         if (!validateInput(title, amountText)) {
-            return; // Вихід, якщо введені дані некоректні
+            return;
         }
 
         DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.US);
@@ -170,7 +191,7 @@ public class AddAccountDialog extends javax.swing.JDialog {
                 if (rowsAffected > 0) {
                     displayAccounts();
                     JOptionPane.showMessageDialog(this, "Гаманець успішно додано!", "Успіх", JOptionPane.INFORMATION_MESSAGE);
-                    this.dispose(); // Закриття поточного вікна
+                    this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Не вдалося додати гаманець!", "Помилка", JOptionPane.ERROR_MESSAGE);
                 }

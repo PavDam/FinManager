@@ -31,7 +31,7 @@ public class AccountsForm extends javax.swing.JFrame {
     public static void displayAccounts(){
         DefaultTableModel model = (DefaultTableModel) AccountsTable.getModel();
         
-        model.setRowCount(0); // Очищаємо таблицю перед відображенням нових даних
+        model.setRowCount(0); // Очищення таблиці перед відображенням нових даних
 
         int userID = FinManagerPav.currentUserID;
 
@@ -65,6 +65,7 @@ public class AccountsForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Помилка при відображенні рахунків!", "Помилка", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -290,7 +291,7 @@ public class AccountsForm extends javax.swing.JFrame {
 
         int rowCount = AccountsTable.getRowCount();
         if (rowCount <= 1) {
-            JOptionPane.showMessageDialog(this, "Неможливо видалити останній рахунок!", "Помилка", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Неможливо видалити єдиний рахунок!", "Помилка", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

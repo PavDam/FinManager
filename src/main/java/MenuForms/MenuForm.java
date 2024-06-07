@@ -6,6 +6,7 @@ package MenuForms;
 
 import AccountsForms.AccountsForm;
 import LoginForms.LoginForm;
+import TransactionsForms.TransactionsForm;
 import com.mycompany.finmanagerpav.DialogHelper;
 import com.mycompany.finmanagerpav.FinManagerPav;
 import java.sql.Connection;
@@ -149,7 +150,9 @@ public class MenuForm extends javax.swing.JFrame {
 
     private void ToTransactionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToTransactionsButtonActionPerformed
         // TODO add your handling code here:
-
+        TransactionsForm TransactionsF = new TransactionsForm();
+        TransactionsF.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_ToTransactionsButtonActionPerformed
 
     private void ToAccountsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToAccountsButtonActionPerformed
