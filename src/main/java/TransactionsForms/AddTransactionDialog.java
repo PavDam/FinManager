@@ -59,8 +59,10 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         NoteLabel = new javax.swing.JLabel();
         AmountField = new javax.swing.JTextField();
         DateChooser = new com.toedter.calendar.JDateChooser();
+        AccountAmountLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Новий запис");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -74,6 +76,11 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         AccountsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Account 1", "Account 2" }));
         AccountsComboBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         AccountsComboBox.setFocusable(false);
+        AccountsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AccountsComboBoxActionPerformed(evt);
+            }
+        });
 
         TypeLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         TypeLabel.setText("Тип");
@@ -126,6 +133,10 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         DateChooser.setDateFormatString("d MMM y 'р'.");
         DateChooser.setMinSelectableDate(new java.util.Date(946681272000L));
 
+        AccountAmountLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        AccountAmountLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        AccountAmountLabel.setText("Баланс: 0 <UAH/USD>");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -137,7 +148,10 @@ public class AddTransactionDialog extends javax.swing.JDialog {
                         .addComponent(AddTransactionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(NoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(TypeLabel)
-                    .addComponent(AccountLabel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(AccountLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(AccountAmountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(AddAccountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(AccountsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(DateLabel)
@@ -156,7 +170,9 @@ public class AddTransactionDialog extends javax.swing.JDialog {
                 .addGap(25, 25, 25)
                 .addComponent(AddAccountLabel)
                 .addGap(18, 18, 18)
-                .addComponent(AccountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AccountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AccountAmountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(AccountsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -241,7 +257,29 @@ public class AddTransactionDialog extends javax.swing.JDialog {
     }
     
     String selectedType;
-     
+    
+    private int getAccountIdFromComboBox(String selectedAccount) {
+        int accountId = -1;
+        for (Map.Entry<Integer, String> entry : accountIdTitleMap.entrySet()) {
+            if (entry.getValue().equals(selectedAccount)) {
+                accountId = entry.getKey();
+                break;
+            }
+        }
+        return accountId;
+    }
+    
+    private int getCategoryIdFromComboBox(String selectedCategory) {
+        int categoryId = -1;
+        for (Map.Entry<Integer, String> entry : categoryIdNameMap.entrySet()) {
+            if (entry.getValue().equals(selectedCategory)) {
+                categoryId = entry.getKey();
+                break;
+            }
+        }
+        return categoryId;
+    }
+    
     private void AddTransactionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTransactionButtonActionPerformed
         // TODO add your handling code here:
         String selectedAccount = (String) AccountsComboBox.getSelectedItem();
@@ -250,22 +288,8 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         String note = NoteField.getText();
         
         // Знайти відповідні ID гаманця та категорії за їх назвами
-        int accountId = -1;
-        int categoryId = -1;
-
-        for (Map.Entry<Integer, String> entry : accountIdTitleMap.entrySet()) {
-            if (entry.getValue().equals(selectedAccount)) {
-                accountId = entry.getKey();
-                break;
-            }
-        }
-
-        for (Map.Entry<Integer, String> entry : categoryIdNameMap.entrySet()) {
-            if (entry.getValue().equals(selectedCategory)) {
-                categoryId = entry.getKey();
-                break;
-            }
-        }
+        int accountId = getAccountIdFromComboBox(selectedAccount);
+        int categoryId = getCategoryIdFromComboBox(selectedCategory);
         
         if (!validateInput(amountText, accountId)) {
             return;
@@ -349,7 +373,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
         try (Connection connection = FinManagerPav.data.getConnection()) {
-            String query = "SELECT ID, Title FROM account WHERE UserID = ?";
+            String query = "SELECT ID, Title, Amount, Currency FROM account WHERE UserID = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, FinManagerPav.currentUserID);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -358,6 +382,8 @@ public class AddTransactionDialog extends javax.swing.JDialog {
                     while (resultSet.next()) {
                         int id = resultSet.getInt("ID");
                         String title = resultSet.getString("Title");
+                        float amount = resultSet.getFloat("Amount");
+                        String currency = resultSet.getString("Currency");
                         accountIdTitleMap.put(id, title); // Додати ID та назву гаманця до мапи
                         AccountsComboBox.addItem(title); // Додати назву гаманця до комбо боксу
                     }
@@ -382,6 +408,30 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         selectedType = (String) TypeComboBox.getSelectedItem();
         updateCategoryComboBox(selectedType);
     }//GEN-LAST:event_TypeComboBoxActionPerformed
+
+    private void AccountsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AccountsComboBoxActionPerformed
+        // TODO add your handling code here:
+        String selectedAccount = (String) AccountsComboBox.getSelectedItem();
+        int accountId = getAccountIdFromComboBox(selectedAccount);
+
+        // Отримати кількість і валюту обраного акаунта та відобразити їх на мітці AccountAmountLabel
+        try (Connection connection = FinManagerPav.data.getConnection()) {
+            String query = "SELECT Amount, Currency FROM account WHERE ID = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, accountId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        float amount = resultSet.getFloat("Amount");
+                        String currency = resultSet.getString("Currency");
+                        AccountAmountLabel.setText("Баланс: " + amount + " " + currency);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при отриманні даних гаманця!", "Помилка", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_AccountsComboBoxActionPerformed
 
     private final Map<Integer, String> categoryIdNameMap = new HashMap<>();
     
@@ -453,6 +503,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel AccountAmountLabel;
     private javax.swing.JLabel AccountLabel;
     private javax.swing.JComboBox<String> AccountsComboBox;
     private javax.swing.JLabel AddAccountLabel;
@@ -461,7 +512,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel AmountLabel;
     private javax.swing.JComboBox<String> CategoryComboBox;
     private javax.swing.JLabel CategoryLabel;
-    private com.toedter.calendar.JDateChooser DateChooser;
+    public static com.toedter.calendar.JDateChooser DateChooser;
     private javax.swing.JLabel DateLabel;
     private javax.swing.JTextField NoteField;
     private javax.swing.JLabel NoteLabel;

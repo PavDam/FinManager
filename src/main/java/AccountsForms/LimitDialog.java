@@ -108,7 +108,7 @@ public class LimitDialog extends javax.swing.JDialog {
                     statement.executeUpdate();
                     
                     FinManagerPav.currentLimit = limit;
-                    AccountsForm.LimitLabel.setText(limit + " грн.");
+                    AccountsForm.LimitLabel.setText(limit + " UAH");
                     
                     JOptionPane.showMessageDialog(this, "Ліміт успішно оновлено!", "Успіх", JOptionPane.INFORMATION_MESSAGE);
                 }

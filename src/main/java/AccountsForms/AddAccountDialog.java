@@ -69,11 +69,10 @@ public class AddAccountDialog extends javax.swing.JDialog {
 
         CurrencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "UAH", "USD" }));
         CurrencyComboBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        CurrencyComboBox.setEnabled(false);
         CurrencyComboBox.setFocusable(false);
 
         CurrencyLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        CurrencyLabel.setText("Валюта");
+        CurrencyLabel.setText("Валюта (потім не змінюється!)");
 
         AddAccountButton.setText("Додати гаманець");
         AddAccountButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -135,8 +134,13 @@ public class AddAccountDialog extends javax.swing.JDialog {
             return false;
         }
 
+        float floatAmount;
         try {
-            Float.parseFloat(amountText);
+            floatAmount = Float.parseFloat(amountText);
+            if (floatAmount <= 0) {
+                JOptionPane.showMessageDialog(this, "Введіть дійсне число", "Помилка", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Некоректний формат суми.", "Помилка", JOptionPane.WARNING_MESSAGE);
             return false;

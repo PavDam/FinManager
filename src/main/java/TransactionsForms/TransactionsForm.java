@@ -5,16 +5,27 @@
 package TransactionsForms;
 
 import MenuForms.MenuForm;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mycompany.finmanagerpav.FinManagerPav;
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -31,33 +42,109 @@ public class TransactionsForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
+    private static float getExchangeRate() {
+        try {
+            URL url = new URL("https://open.er-api.com/v6/latest/USD");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // Розпарсити JSON відповідь та отримати курс обміну для вибраної валюти
+            JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
+            JsonObject rates = jsonResponse.getAsJsonObject("rates");
+            return rates.get("UAH").getAsFloat();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Помилка при отриманні курсу обміну!", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return -1;
+        }
+    }
+
+    // Метод для відображення транзакцій користувачеві з конвертованою сумою в UAH
     public static void displayTransactions() {
         DefaultTableModel model = (DefaultTableModel) TransactionsTable.getModel();
-
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < TransactionsTable.getColumnCount() - 1; i++) {
+            TransactionsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
         model.setRowCount(0); // Очищення таблиці перед відображенням нових даних
 
         int userID = FinManagerPav.currentUserID;
+        float totalAmount = 0;
 
         try (Connection connection = FinManagerPav.data.getConnection()) {
-            String query = "SELECT t.ID, a.Title AS AccountTitle, t.Date, c.Name AS CategoryName, t.Amount, t.Note " +
-                           "FROM transaction t " +
-                           "JOIN account a ON t.AccountID = a.ID " +
-                           "JOIN category c ON t.CategoryID = c.ID " +
-                           "WHERE t.UserID = ? " +
-                           "ORDER BY t.Date DESC";
+            // Отримати вибрану валюту з CurrencyComboBox
+            String selectedCurrency = (String) CurrencyComboBox.getSelectedItem();
+            float exchangeRate = getExchangeRate();
+
+            // Отримати поточний місяць і рік
+            Calendar calendar = Calendar.getInstance();
+            int currentMonth = calendar.get(Calendar.MONTH) + 1; // Місяці починаються з 0
+            int currentYear = calendar.get(Calendar.YEAR);
+
+            // Запит для отримання транзакцій з бази даних
+            String query = "SELECT t.ID, a.Title AS AccountTitle, a.Currency AS AccountCurrency, t.Date, c.Name AS CategoryName, t.Amount, t.Note " +
+                    "FROM transaction t " +
+                    "JOIN account a ON t.AccountID = a.ID " +
+                    "JOIN category c ON t.CategoryID = c.ID " +
+                    "WHERE t.UserID = ? " +
+                    "ORDER BY t.Date DESC";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, userID);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         int ID = resultSet.getInt("ID");
                         String accountTitle = resultSet.getString("AccountTitle");
+                        String accountCurrency = resultSet.getString("AccountCurrency");
                         String dateStr = resultSet.getString("Date");
                         String formattedDate = formatDate(dateStr);
                         String categoryName = resultSet.getString("CategoryName");
                         float amount = resultSet.getFloat("Amount");
                         String note = resultSet.getString("Note");
 
+                        // Перевірити, чи валюта акаунта - USD, і конвертувати суму транзакції в UAH
+                        if ("USD".equals(accountCurrency) && "UAH".equals(selectedCurrency)) {
+                            // Отримати курс обміну USD-UAH та конвертувати суму транзакції в UAH
+                            amount *= exchangeRate;
+                        } else if ("UAH".equals(accountCurrency) && "USD".equals(selectedCurrency)) {
+                            amount /= exchangeRate;
+                        }
+
+                        // Додати рядок з транзакцією в таблицю
                         model.addRow(new Object[]{ID, accountTitle, formattedDate, categoryName, amount, note});
+
+                        // Отримати місяць та рік з dateStr
+                        String[] dateParts = dateStr.split("-");
+                        int transactionYear = Integer.parseInt(dateParts[0]);
+                        int transactionMonth = Integer.parseInt(dateParts[1]);
+
+                        // Додати суму транзакції до загальної суми, якщо місяць і рік збігаються і сума від'ємна
+                        if (amount < 0 && transactionYear == currentYear && transactionMonth == currentMonth) {
+                            totalAmount += amount;
+                        }
+                    }
+
+                    float LimitInSelectedCurrency = FinManagerPav.currentLimit;
+                    if ("USD".equals(selectedCurrency)) {
+                        LimitInSelectedCurrency /= exchangeRate; // Конвертуємо ліміт у валюту обраної транзакції
+                    }
+
+                    UseLimitLabel1.setText(String.format("%.2f/%.2f %s", totalAmount * -1, LimitInSelectedCurrency, selectedCurrency));
+                    
+                    if (totalAmount * -1 < LimitInSelectedCurrency){
+                        LimitStatusLabel.setText("Все гаразд!");
+                        LimitStatusLabel.setForeground(new Color(0, 204, 0));
+                    }
+                    else {
+                        LimitStatusLabel.setText("Перевищено!");
+                        LimitStatusLabel.setForeground(new Color(255, 51, 51));                    
                     }
                 }
             }
@@ -94,6 +181,10 @@ public class TransactionsForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         TransactionsTable = new javax.swing.JTable();
         AddAccountButton = new javax.swing.JButton();
+        CurrencyComboBox = new javax.swing.JComboBox<>();
+        UseLimitLabel0 = new javax.swing.JLabel();
+        UseLimitLabel1 = new javax.swing.JLabel();
+        LimitStatusLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("FinManager");
@@ -167,23 +258,63 @@ public class TransactionsForm extends javax.swing.JFrame {
             }
         });
 
+        CurrencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "UAH", "USD" }));
+        CurrencyComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CurrencyComboBoxActionPerformed(evt);
+            }
+        });
+
+        UseLimitLabel0.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        UseLimitLabel0.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UseLimitLabel0.setText("Витрачено/ліміт:");
+
+        UseLimitLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        UseLimitLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UseLimitLabel1.setText("0/1 <UAH/USD>");
+
+        LimitStatusLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        LimitStatusLabel.setForeground(new java.awt.Color(0, 204, 0));
+        LimitStatusLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LimitStatusLabel.setText("Статус");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
+                .addGap(675, 675, 675)
                 .addComponent(AddAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CurrencyComboBox, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(UseLimitLabel0, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(LimitStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(658, 658, 658)
+                        .addComponent(UseLimitLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(8, 8, 8))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(355, 355, 355)
+                .addGap(15, 15, 15)
+                .addComponent(CurrencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(UseLimitLabel0)
+                .addGap(0, 0, 0)
+                .addComponent(UseLimitLabel1)
+                .addGap(0, 0, 0)
+                .addComponent(LimitStatusLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(AddAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -205,6 +336,11 @@ public class TransactionsForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         displayTransactions();
     }//GEN-LAST:event_formWindowOpened
+
+    private void CurrencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CurrencyComboBoxActionPerformed
+        // TODO add your handling code here:
+        displayTransactions();
+    }//GEN-LAST:event_CurrencyComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,7 +379,11 @@ public class TransactionsForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddAccountButton;
+    private static javax.swing.JComboBox<String> CurrencyComboBox;
+    private static javax.swing.JLabel LimitStatusLabel;
     private static javax.swing.JTable TransactionsTable;
+    private javax.swing.JLabel UseLimitLabel0;
+    private static javax.swing.JLabel UseLimitLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

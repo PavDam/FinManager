@@ -8,6 +8,7 @@ import static AccountsForms.AccountsForm.displayAccounts;
 import com.mycompany.finmanagerpav.FinManagerPav;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -144,19 +145,45 @@ public class EditAccountDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private boolean validateInput(String title, String amountText) {
+    private boolean validateInput(int accountID, String title, String amountText) {
         if (title.isEmpty() || amountText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Будь ласка, заповніть усі поля.", "Помилка", JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
+        float floatAmount;
         try {
-            Float.parseFloat(amountText);
-            return true;
+            floatAmount = Float.parseFloat(amountText);
+            if (floatAmount <= 0) {
+                JOptionPane.showMessageDialog(this, "Введіть дійсне число", "Помилка", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Некоректний формат суми.", "Помилка", JOptionPane.WARNING_MESSAGE);
             return false;
         }
+        
+        // Перевірка на існування гаманця з такою ж назвою для обраного користувача
+        try (Connection connection = FinManagerPav.data.getConnection()) {
+            String query = "SELECT COUNT(*) FROM account WHERE UserID = ? AND Title = ? AND ID <> ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, FinManagerPav.currentUserID);
+                statement.setString(2, title);
+                statement.setInt(3, accountID);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next() && resultSet.getInt(1) > 0) {
+                        JOptionPane.showMessageDialog(this, "Гаманець з такою назвою вже існує.", "Помилка", JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Помилка при перевірці гаманця.", "Помилка", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;
     }
         
     private void UpdateAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateAccountButtonActionPerformed
@@ -166,7 +193,7 @@ public class EditAccountDialog extends javax.swing.JDialog {
         String currency = (String) CurrencyComboBox.getSelectedItem();
         String amountText = AmountField.getText();
 
-        if (!validateInput(title, amountText)) {
+        if (!validateInput(accountID, title, amountText)) {
             return; // Вихід, якщо введені дані некоректні
         }
 

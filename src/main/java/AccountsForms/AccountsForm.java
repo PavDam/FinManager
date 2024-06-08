@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -30,6 +32,11 @@ public class AccountsForm extends javax.swing.JFrame {
     
     public static void displayAccounts(){
         DefaultTableModel model = (DefaultTableModel) AccountsTable.getModel();
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < AccountsTable.getColumnCount(); i++) {
+            AccountsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
         
         model.setRowCount(0); // Очищення таблиці перед відображенням нових даних
 
@@ -107,7 +114,7 @@ public class AccountsForm extends javax.swing.JFrame {
 
         LimitLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         LimitLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LimitLabel.setText("0 грн.");
+        LimitLabel.setText("0 UAH");
 
         LimitLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         LimitLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -241,7 +248,7 @@ public class AccountsForm extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        LimitLabel.setText(FinManagerPav.currentLimit + " грн.");
+        LimitLabel.setText(FinManagerPav.currentLimit + " UAH");
         displayAccounts();
     }//GEN-LAST:event_formWindowOpened
 

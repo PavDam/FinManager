@@ -127,7 +127,6 @@
             <EmptyBorder bottom="5" left="5" right="5" top="5"/>
           </Border>
         </Property>
-        <Property name="enabled" type="boolean" value="false"/>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>
       <AuxValues>
@@ -139,7 +138,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="14" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#x412;&#x430;&#x43b;&#x44e;&#x442;&#x430;"/>
+        <Property name="text" type="java.lang.String" value="&#x412;&#x430;&#x43b;&#x44e;&#x442;&#x430; (&#x43f;&#x43e;&#x442;&#x456;&#x43c; &#x43d;&#x435; &#x437;&#x43c;&#x456;&#x43d;&#x44e;&#x454;&#x442;&#x44c;&#x441;&#x44f;!)"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="AddAccountButton">
