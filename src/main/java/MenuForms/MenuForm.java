@@ -6,6 +6,7 @@ package MenuForms;
 
 import AccountsForms.AccountsForm;
 import LoginForms.LoginForm;
+import StatisticsForms.StatisticsForm;
 import TransactionsForms.TransactionsForm;
 import com.mycompany.finmanagerpav.DialogHelper;
 import com.mycompany.finmanagerpav.FinManagerPav;
@@ -42,6 +43,7 @@ public class MenuForm extends javax.swing.JFrame {
         UserExitButton = new javax.swing.JButton();
         ToTransactionsButton = new javax.swing.JButton();
         ToAccountsButton = new javax.swing.JButton();
+        ToStatisticsButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FinManager");
@@ -81,6 +83,15 @@ public class MenuForm extends javax.swing.JFrame {
             }
         });
 
+        ToStatisticsButton.setText("Статистика");
+        ToStatisticsButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ToStatisticsButton.setFocusable(false);
+        ToStatisticsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ToStatisticsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,12 +101,13 @@ public class MenuForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(ToTransactionsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(WelcomeLabel)
-                    .addComponent(ToAccountsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ToAccountsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ToStatisticsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(117, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(UserExitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(15, 15, 15))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,9 +118,11 @@ public class MenuForm extends javax.swing.JFrame {
                 .addComponent(ToTransactionsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(ToAccountsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(ToStatisticsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
                 .addComponent(UserExitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -147,10 +161,11 @@ public class MenuForm extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_UserExitButtonActionPerformed
-
+    
+    public static TransactionsForm TransactionsF;
     private void ToTransactionsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToTransactionsButtonActionPerformed
         // TODO add your handling code here:
-        TransactionsForm TransactionsF = new TransactionsForm();
+        TransactionsF = new TransactionsForm();
         TransactionsF.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ToTransactionsButtonActionPerformed
@@ -161,6 +176,13 @@ public class MenuForm extends javax.swing.JFrame {
         AccountsF.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ToAccountsButtonActionPerformed
+
+    private void ToStatisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToStatisticsButtonActionPerformed
+        // TODO add your handling code here:
+        StatisticsForm StatisticsF = new StatisticsForm();
+        StatisticsF.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ToStatisticsButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -198,9 +220,8 @@ public class MenuForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton LoginButton;
-    private javax.swing.JButton LoginButton1;
     private javax.swing.JButton ToAccountsButton;
+    private javax.swing.JButton ToStatisticsButton;
     private javax.swing.JButton ToTransactionsButton;
     private javax.swing.JButton UserExitButton;
     public javax.swing.JLabel WelcomeLabel;

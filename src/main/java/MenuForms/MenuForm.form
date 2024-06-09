@@ -33,13 +33,14 @@
                   <Component id="ToTransactionsButton" alignment="2" min="-2" pref="150" max="-2" attributes="0"/>
                   <Component id="WelcomeLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="ToAccountsButton" alignment="2" min="-2" pref="150" max="-2" attributes="0"/>
+                  <Component id="ToStatisticsButton" alignment="2" min="-2" pref="150" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="117" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="UserExitButton" min="-2" pref="90" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -52,9 +53,11 @@
               <Component id="ToTransactionsButton" min="-2" pref="25" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="ToAccountsButton" min="-2" pref="25" max="-2" attributes="0"/>
-              <EmptySpace pref="129" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="ToStatisticsButton" min="-2" pref="25" max="-2" attributes="0"/>
+              <EmptySpace pref="77" max="32767" attributes="0"/>
               <Component id="UserExitButton" min="-2" pref="20" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -105,6 +108,18 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ToAccountsButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="ToStatisticsButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x421;&#x442;&#x430;&#x442;&#x438;&#x441;&#x442;&#x438;&#x43a;&#x430;"/>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
+        </Property>
+        <Property name="focusable" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ToStatisticsButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

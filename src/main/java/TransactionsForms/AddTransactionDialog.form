@@ -4,6 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" value="&#x41d;&#x43e;&#x432;&#x438;&#x439; &#x437;&#x430;&#x43f;&#x438;&#x441;"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -28,28 +29,35 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="75" pref="75" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="AddTransactionButton" alignment="2" min="-2" pref="150" max="-2" attributes="0"/>
-                      <Component id="NoteField" alignment="2" min="-2" pref="250" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="CategoryComboBox" min="-2" pref="250" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="TypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="AccountLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="AccountAmountLabel" max="32767" attributes="0"/>
+                      <EmptySpace min="75" pref="75" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="103" groupAlignment="2" attributes="0">
+                              <Component id="AddTransactionButton" alignment="2" min="-2" pref="150" max="-2" attributes="0"/>
+                              <Component id="NoteField" alignment="2" min="-2" pref="250" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="TypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="AccountLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="AccountAmountLabel" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="AddAccountLabel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="AccountsComboBox" alignment="0" max="32767" attributes="0"/>
+                          <Component id="DateLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="CategoryLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="TypeComboBox" max="32767" attributes="0"/>
+                          <Component id="AmountLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="NoteLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="AmountField" max="32767" attributes="0"/>
+                          <Component id="DateChooser" alignment="0" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
-                  <Component id="AddAccountLabel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="AccountsComboBox" alignment="0" max="32767" attributes="0"/>
-                  <Component id="DateLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="CategoryComboBox" max="32767" attributes="0"/>
-                  <Component id="CategoryLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="TypeComboBox" max="32767" attributes="0"/>
-                  <Component id="AmountLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="NoteLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="AmountField" max="32767" attributes="0"/>
-                  <Component id="DateChooser" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="75" max="32767" attributes="0"/>
           </Group>
@@ -117,6 +125,9 @@
             <EmptyBorder bottom="5" left="5" right="5" top="5"/>
           </Border>
         </Property>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
+        </Property>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -179,6 +190,9 @@
             <EmptyBorder bottom="5" left="5" right="5" top="5"/>
           </Border>
         </Property>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
+        </Property>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>
       <AuxValues>
@@ -205,6 +219,9 @@
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
             <EmptyBorder bottom="5" left="5" right="5" top="5"/>
           </Border>
+        </Property>
+        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+          <Color id="Hand Cursor"/>
         </Property>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>

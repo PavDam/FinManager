@@ -6,6 +6,7 @@ package TransactionsForms;
 
 import static TransactionsForms.TransactionsForm.displayTransactions;
 import com.mycompany.finmanagerpav.FinManagerPav;
+import java.awt.Window;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -63,6 +65,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Новий запис");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -75,6 +78,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
 
         AccountsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Account 1", "Account 2" }));
         AccountsComboBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        AccountsComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         AccountsComboBox.setFocusable(false);
         AccountsComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -103,6 +107,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
 
         CategoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Категорія 1", "Категорія 2", "Категорія 3" }));
         CategoryComboBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        CategoryComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         CategoryComboBox.setFocusable(false);
 
         CategoryLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -110,6 +115,7 @@ public class AddTransactionDialog extends javax.swing.JDialog {
 
         TypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Витрати", "Отримання" }));
         TypeComboBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        TypeComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TypeComboBox.setFocusable(false);
         TypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,26 +148,30 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(75, 75, 75)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(AddTransactionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(NoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(TypeLabel)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(AccountLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(AccountAmountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(AddAccountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(AccountsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(DateLabel)
-                    .addComponent(CategoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(CategoryLabel)
-                    .addComponent(TypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(AmountLabel)
-                    .addComponent(NoteLabel)
-                    .addComponent(AmountField)
-                    .addComponent(DateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(CategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                .addComponent(AddTransactionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(NoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TypeLabel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(AccountLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(AccountAmountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(AddAccountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(AccountsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(DateLabel)
+                            .addComponent(CategoryLabel)
+                            .addComponent(TypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(AmountLabel)
+                            .addComponent(NoteLabel)
+                            .addComponent(AmountField)
+                            .addComponent(DateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(

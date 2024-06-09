@@ -4,6 +4,7 @@
  */
 package TransactionsForms;
 
+import CategoriesForms.CustomCategoriesForm;
 import MenuForms.MenuForm;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -95,7 +96,7 @@ public class TransactionsForm extends javax.swing.JFrame {
                     "JOIN account a ON t.AccountID = a.ID " +
                     "JOIN category c ON t.CategoryID = c.ID " +
                     "WHERE t.UserID = ? " +
-                    "ORDER BY t.Date DESC";
+                    "ORDER BY t.Date DESC, t.ID DESC";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, userID);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -185,6 +186,7 @@ public class TransactionsForm extends javax.swing.JFrame {
         UseLimitLabel0 = new javax.swing.JLabel();
         UseLimitLabel1 = new javax.swing.JLabel();
         LimitStatusLabel = new javax.swing.JLabel();
+        ToCustomCategoriesButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("FinManager");
@@ -278,14 +280,20 @@ public class TransactionsForm extends javax.swing.JFrame {
         LimitStatusLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LimitStatusLabel.setText("Статус");
 
+        ToCustomCategoriesButton.setText("Категорії");
+        ToCustomCategoriesButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ToCustomCategoriesButton.setFocusable(false);
+        ToCustomCategoriesButton.setPreferredSize(new java.awt.Dimension(130, 23));
+        ToCustomCategoriesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ToCustomCategoriesButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(675, 675, 675)
-                .addComponent(AddAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -299,6 +307,12 @@ public class TransactionsForm extends javax.swing.JFrame {
                         .addGap(658, 658, 658)
                         .addComponent(UseLimitLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(8, 8, 8))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(675, 675, 675)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ToCustomCategoriesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -313,6 +327,8 @@ public class TransactionsForm extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(LimitStatusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ToCustomCategoriesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(AddAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15))
         );
@@ -341,6 +357,13 @@ public class TransactionsForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         displayTransactions();
     }//GEN-LAST:event_CurrencyComboBoxActionPerformed
+
+    private void ToCustomCategoriesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToCustomCategoriesButtonActionPerformed
+        // TODO add your handling code here:
+        CustomCategoriesForm CustomCategoriesF = new CustomCategoriesForm();
+        CustomCategoriesF.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_ToCustomCategoriesButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -381,6 +404,7 @@ public class TransactionsForm extends javax.swing.JFrame {
     private javax.swing.JButton AddAccountButton;
     private static javax.swing.JComboBox<String> CurrencyComboBox;
     private static javax.swing.JLabel LimitStatusLabel;
+    public javax.swing.JButton ToCustomCategoriesButton;
     private static javax.swing.JTable TransactionsTable;
     private javax.swing.JLabel UseLimitLabel0;
     private static javax.swing.JLabel UseLimitLabel1;
