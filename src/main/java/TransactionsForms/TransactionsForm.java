@@ -8,6 +8,7 @@ import CategoriesForms.CustomCategoriesForm;
 import MenuForms.MenuForm;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import static com.mycompany.finmanagerpav.CurrencyConverter.getExchangeRate;
 import com.mycompany.finmanagerpav.FinManagerPav;
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -42,31 +43,7 @@ public class TransactionsForm extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
     }
-
-    private static float getExchangeRate() {
-        try {
-            URL url = new URL("https://open.er-api.com/v6/latest/USD");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            // Розпарсити JSON відповідь та отримати курс обміну для вибраної валюти
-            JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
-            JsonObject rates = jsonResponse.getAsJsonObject("rates");
-            return rates.get("UAH").getAsFloat();
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Помилка при отриманні курсу обміну!", "Помилка", JOptionPane.ERROR_MESSAGE);
-            return -1;
-        }
-    }
-
+    
     // Метод для відображення транзакцій користувачеві з конвертованою сумою в UAH
     public static void displayTransactions() {
         DefaultTableModel model = (DefaultTableModel) TransactionsTable.getModel();
@@ -136,10 +113,13 @@ public class TransactionsForm extends javax.swing.JFrame {
                     if ("USD".equals(selectedCurrency)) {
                         LimitInSelectedCurrency /= exchangeRate; // Конвертуємо ліміт у валюту обраної транзакції
                     }
-
-                    UseLimitLabel1.setText(String.format("%.2f/%.2f %s", totalAmount * -1, LimitInSelectedCurrency, selectedCurrency));
                     
-                    if (totalAmount * -1 < LimitInSelectedCurrency){
+                    if(totalAmount != 0.0){
+                        totalAmount *= -1;
+                    }
+                    UseLimitLabel1.setText(String.format("%.2f/%.2f %s", totalAmount, LimitInSelectedCurrency, selectedCurrency));
+                    
+                    if (totalAmount * -1 <= LimitInSelectedCurrency){
                         LimitStatusLabel.setText("Все гаразд!");
                         LimitStatusLabel.setForeground(new Color(0, 204, 0));
                     }
