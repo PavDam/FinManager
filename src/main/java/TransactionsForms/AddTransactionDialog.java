@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -236,10 +235,6 @@ public class AddTransactionDialog extends javax.swing.JDialog {
             return false;
         }
 
-        if(!isAmountWithinAccountBalance(floatAmount, accountId)) {
-            return false;
-        }
-
         return true;
     }
     
@@ -316,6 +311,10 @@ public class AddTransactionDialog extends javax.swing.JDialog {
         
         if (selectedType.equals("Витрати")) {
             amount *= -1;
+            
+            if(!isAmountWithinAccountBalance(amount, accountId)) {
+                return;
+            }
         }
         
         try (Connection connection = FinManagerPav.data.getConnection()) {

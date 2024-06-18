@@ -19,11 +19,11 @@ public class FinManagerPav {
     public static float currentLimit;
     
     public static void main(String[] args) {
-        data.setServerName("localhost");
+        data.setServerName("sql7.freesqldatabase.com");
         data.setPort(3306);
-        data.setUser("root");
-        data.setPassword("277353Damian");
-        data.setDatabaseName("finance-manager");
+        data.setUser("sql7713578");
+        data.setPassword("8nAlC3Tcqv");
+        data.setDatabaseName("sql7713578");
         
         LoginForm LoginF = new LoginForm();
         // Відображення вікна
